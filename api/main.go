@@ -52,7 +52,7 @@ func main() {
 		initiativeController := controllers.NewInitiativeController()
 		// karmaController := controllers.NewKarmaController()
 		// questController := controllers.NewQuestController()
-		// rollController := controllers.NewRollController()
+		rollController := controllers.NewRollController()
 
 		routes := rootController.Routes()
 		routes = append(routes, swaggerController.Routes()...)
@@ -60,7 +60,7 @@ func main() {
 		routes = append(routes, initiativeController.Routes()...)
 		// routes = append(routes, karmaController.Routes()...)
 		// routes = append(routes, questController.Routes()...)
-		// routes = append(routes, rollController.Routes()...)
+		routes = append(routes, rollController.Routes()...)
 		routes = fireball.Decorate(routes, fireball.LogDecorator())
 
 		fb := fireball.NewApp(routes)

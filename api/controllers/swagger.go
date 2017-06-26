@@ -38,12 +38,16 @@ func (s *SwaggerController) ServeSwaggerJSON(c *fireball.Context) (fireball.Resp
 		Schemes:        []string{"http"},
 		Info: &swagger.Info{
 			Title:   "DungeonBot",
-			Version: "5.something, I think?",
+			Version: "unset/dev",
 		},
 		Tags: []swagger.Tag{
 			{
 				Name:        "Initiative",
 				Description: "Methods related to the initiative tracker",
+			},
+			{
+				Name:        "Roll",
+				Description: "Methods related to rolling dice",
 			},
 		},
 		Paths: map[string]swagger.Path{
@@ -122,6 +126,43 @@ func (s *SwaggerController) ServeSwaggerJSON(c *fireball.Context) (fireball.Resp
 					},
 				},
 			},
+			"/roll": {
+				"get": {
+					Summary: "Prints help text",
+					Tags:    []string{"Roll"},
+					Responses: map[string]swagger.Response{
+						"200": {
+							Description: "Help text",
+						},
+					},
+				},
+				"post": {
+					Summary: "Make the roll(s) contained in the request's body",
+					Tags:    []string{"Roll"},
+					Parameters: []swagger.Parameter{
+						swagger.NewBodyParam("RollBatchRequest", "Roll(s) to make", true),
+					},
+					Responses: map[string]swagger.Response{
+						"202": {
+							Description: "Roll results",
+							Schema:      swagger.NewObjectSchema("RollBatchResponse"),
+						},
+					},
+				},
+			},
+			"/roll/:roll": {
+				"get": {
+					Summary: "Make a single roll contained in the request's URI",
+					Tags:    []string{"Roll"},
+					Responses: map[string]swagger.Response{
+						"200": {
+							Description: "Roll results",
+							Schema:      swagger.NewIntSchema(),
+						},
+					},
+				},
+			},
+			"/roll/savedroll/:rollname": {},
 		},
 		Definitions: map[string]swagger.Definition{
 			"InitiativeAddEntityRequest":     models.InitiativeAddEntityRequest{}.Definition(),
@@ -131,6 +172,8 @@ func (s *SwaggerController) ServeSwaggerJSON(c *fireball.Context) (fireball.Resp
 			"InitiativeRemoveEntityRequest":  models.InitiativeRemoveEntityRequest{}.Definition(),
 			"InitiativeRemoveEntityResponse": models.InitiativeRemoveEntityResponse{}.Definition(),
 			"InitiativeListEntitiesResponse": models.InitiativeListEntitiesResponse{}.Definition(),
+			"RollBatchRequest":               models.RollBatchRequest{}.Definition(),
+			"RollBatchResponse":              models.RollBatchResponse{}.Definition(),
 		},
 	}
 
